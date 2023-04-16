@@ -68,7 +68,8 @@ final class SampledImageReader
 
         // fill with paint using src-in
         //g.setComposite(AlphaComposite.SrcIn);
-        g.drawRect(0, 0, width, height, paint);
+        // This was leaving an edge beyond the pixels set below
+        //g.drawRect(0, 0, width, height, paint);
 
         // set the alpha
 
@@ -104,6 +105,10 @@ final class SampledImageReader
                         if (bit == value)
                         {
                             masked.setPixel(x, y, Color.TRANSPARENT);
+                        }
+                        else
+                        {
+                            masked.setPixel(x, y, paint.getColor());
                         }
                         x++;
                         if (x == width)

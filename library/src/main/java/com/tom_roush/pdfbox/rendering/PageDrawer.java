@@ -62,6 +62,7 @@ import com.tom_roush.pdfbox.pdmodel.graphics.color.PDColor;
 import com.tom_roush.pdfbox.pdmodel.graphics.color.PDColorSpace;
 import com.tom_roush.pdfbox.pdmodel.graphics.color.PDDeviceGray;
 import com.tom_roush.pdfbox.pdmodel.graphics.color.PDICCBased;
+import com.tom_roush.pdfbox.pdmodel.graphics.color.PDSpecialColorSpace;
 import com.tom_roush.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import com.tom_roush.pdfbox.pdmodel.graphics.form.PDTransparencyGroup;
 import com.tom_roush.pdfbox.pdmodel.graphics.image.PDImage;
@@ -832,9 +833,22 @@ public class PageDrawer extends PDFGraphicsStreamEngine
 
         if (pdImage.isStencil())
         {
-//            if (getGraphicsState().getNonStrokingColor().getColorSpace() instanceof PDPattern) TODO: PdfBox-Android
-//            else
-//            TODO: PdfBox-Android draw stenciled Bitmap
+            //if (getGraphicsState().getNonStrokingColor().getColorSpace() instanceof PDPattern)
+            // PDPattern not present - use superclass
+            if (getGraphicsState().getNonStrokingColor().getColorSpace() instanceof PDSpecialColorSpace)
+            {
+//            TODO: PdfBox-Android
+            }
+            else
+            {
+                // fill the image with stenciled paint
+                //BufferedImage image = pdImage.getStencilImage(getNonStrokingPaint());
+                paint.setColor(getNonStrokingColor());
+                Bitmap image = pdImage.getStencilImage(paint);
+
+                // draw the image
+                drawBitmap(image, at);
+            }
         }
         else
         {
